@@ -515,6 +515,252 @@ select:focus, input[type="text"]:focus {
   text-transform: uppercase;
 }
 
+/* ── KEY GATE ─────────────────────────────────────────────── */
+#keyGate {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  background: var(--bg);
+  transition: opacity 0.6s, visibility 0.6s;
+  overflow: hidden;
+}
+#keyGate.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+/* animated rings behind card */
+.gate-ring {
+  position: absolute; border-radius: 50%;
+  border: 1px solid rgba(232,255,71,0.06);
+  pointer-events: none; animation: ringpulse 6s ease-in-out infinite;
+}
+.gate-ring:nth-child(1){ width:500px; height:500px; animation-delay:0s; }
+.gate-ring:nth-child(2){ width:700px; height:700px; animation-delay:1.5s; border-color: rgba(71,255,184,0.04); }
+.gate-ring:nth-child(3){ width:900px; height:900px; animation-delay:3s; border-color: rgba(155,111,255,0.03); }
+@keyframes ringpulse {
+  0%,100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.04); opacity: 0.4; }
+}
+
+.gate-glow {
+  position: absolute; width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(232,255,71,0.06) 0%, transparent 65%);
+  filter: blur(40px); pointer-events: none; animation: glowpulse 4s ease-in-out infinite alternate;
+}
+@keyframes glowpulse { from { opacity: 0.6; transform: scale(0.95); } to { opacity: 1; transform: scale(1.05); } }
+
+/* card */
+.gate-card {
+  width: 100%; max-width: 480px;
+  background: rgba(13,13,31,0.92);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 24px; overflow: hidden;
+  box-shadow: 0 60px 120px rgba(0,0,0,0.7), 0 0 0 1px rgba(232,255,71,0.04);
+  position: relative; z-index: 1;
+  backdrop-filter: blur(30px);
+  animation: gateIn 0.7s cubic-bezier(.22,.68,0,1.1) both;
+}
+@keyframes gateIn {
+  from { opacity: 0; transform: translateY(28px) scale(0.96); }
+  to   { opacity: 1; transform: none; }
+}
+.gate-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent 5%, rgba(232,255,71,0.55) 50%, transparent 95%);
+}
+
+/* top hero section */
+.gate-hero {
+  padding: 44px 36px 36px;
+  text-align: center;
+  position: relative;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.gate-hero-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 5px 14px; border-radius: 999px;
+  background: rgba(232,255,71,0.07);
+  border: 1px solid rgba(232,255,71,0.2);
+  font-family: 'Space Mono', monospace; font-size: 8px;
+  letter-spacing: 3px; color: var(--c1); text-transform: uppercase;
+  margin-bottom: 22px;
+}
+.gate-badge-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--c1); animation: eyedot 2s infinite;
+}
+.gate-logo {
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 42px;
+  letter-spacing: -3px; color: var(--text); line-height: 1;
+}
+.gate-logo span {
+  -webkit-text-stroke: 1.5px rgba(232,255,71,0.8);
+  color: transparent;
+}
+.gate-tagline {
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 300;
+  color: var(--text-dim); margin-top: 10px; letter-spacing: 0.3px;
+}
+
+/* body */
+.gate-body {
+  padding: 30px 32px 32px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+
+.gate-label {
+  font-family: 'Space Mono', monospace; font-size: 8px;
+  letter-spacing: 2.5px; color: var(--text-dim); text-transform: uppercase;
+  margin-bottom: 7px; display: flex; align-items: center; gap: 6px;
+}
+.gate-label::before {
+  content: ''; width: 3px; height: 3px; border-radius: 50%;
+  background: var(--c1); opacity: 0.7; display: inline-block;
+}
+
+.key-input-wrap { position: relative; }
+.key-input {
+  width: 100%; background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text); font-family: 'Space Mono', monospace;
+  font-size: 13px; letter-spacing: 1.5px;
+  padding: 15px 48px 15px 18px;
+  border-radius: 12px; outline: none;
+  transition: all 0.25s; text-transform: uppercase;
+}
+.key-input::placeholder {
+  color: var(--text-dim); text-transform: none;
+  letter-spacing: 0; font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+}
+.key-input:focus {
+  border-color: var(--c1);
+  background: rgba(232,255,71,0.03);
+  box-shadow: 0 0 0 3px rgba(232,255,71,0.08);
+}
+.key-input.error {
+  border-color: var(--c3);
+  box-shadow: 0 0 0 3px rgba(255,71,115,0.09);
+  animation: shake 0.35s ease;
+}
+@keyframes shake {
+  0%,100%{transform:translateX(0)} 20%{transform:translateX(-7px)} 60%{transform:translateX(7px)} 80%{transform:translateX(-3px)}
+}
+
+.key-input-icon {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  pointer-events: none; display: flex; align-items: center;
+}
+.key-input-icon.left  { left: 15px; }
+.key-input-icon.right {
+  right: 14px; font-size: 11px;
+  font-family: 'Space Mono', monospace; letter-spacing: 1px;
+  color: var(--text-dim); opacity: 0.5;
+}
+
+/* status message */
+.gate-msg {
+  padding: 11px 14px; border-radius: 10px; font-size: 12px;
+  display: flex; align-items: center; gap: 9px;
+  transition: all 0.3s; line-height: 1.4;
+}
+.gate-msg.idle    { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); color: var(--text-dim); }
+.gate-msg.loading { background: rgba(155,111,255,0.07); border: 1px solid rgba(155,111,255,0.22); color: #c084fc; }
+.gate-msg.ok      { background: rgba(71,255,184,0.07);  border: 1px solid rgba(71,255,184,0.28); color: var(--c2); }
+.gate-msg.fail    { background: rgba(255,71,115,0.07);  border: 1px solid rgba(255,71,115,0.28); color: var(--c3); }
+
+.gate-spinner {
+  width: 13px; height: 13px; border-radius: 50%; flex-shrink: 0;
+  border: 2px solid rgba(155,111,255,0.2); border-top-color: #c084fc;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* verify button */
+.btn-verify {
+  width: 100%; padding: 16px;
+  background: var(--c1); color: #000;
+  border: none; border-radius: 12px;
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px;
+  cursor: pointer; transition: all 0.22s; letter-spacing: 0.3px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  position: relative; overflow: hidden;
+}
+.btn-verify::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  opacity: 0; transition: opacity 0.2s;
+}
+.btn-verify:hover:not(:disabled)::after { opacity: 1; }
+.btn-verify:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(232,255,71,0.4);
+  background: #eeff5a;
+}
+.btn-verify:active:not(:disabled) { transform: scale(0.98); }
+.btn-verify:disabled { opacity: 0.3; cursor: not-allowed; }
+
+/* discord CTA */
+.gate-discord {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 16px; border-radius: 12px;
+  background: rgba(88,101,242,0.08);
+  border: 1px solid rgba(88,101,242,0.22);
+  text-decoration: none; transition: all 0.22s; cursor: pointer;
+}
+.gate-discord:hover {
+  background: rgba(88,101,242,0.15);
+  border-color: rgba(88,101,242,0.45);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(88,101,242,0.2);
+}
+.gate-discord-icon {
+  width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+  background: rgba(88,101,242,0.3);
+  display: flex; align-items: center; justify-content: center; font-size: 20px;
+}
+.gate-discord-text { flex: 1; }
+.gate-discord-title {
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px;
+  color: var(--text); margin-bottom: 2px;
+}
+.gate-discord-sub {
+  font-size: 11px; color: var(--text-dim);
+}
+.gate-discord-arrow {
+  font-size: 18px; color: rgba(88,101,242,0.6);
+  transition: transform 0.2s;
+}
+.gate-discord:hover .gate-discord-arrow { transform: translateX(3px); }
+
+/* divider */
+.gate-divider {
+  display: flex; align-items: center; gap: 12px;
+}
+.gate-divider::before, .gate-divider::after {
+  content: ''; flex: 1; height: 1px;
+  background: rgba(255,255,255,0.07);
+}
+.gate-divider span {
+  font-family: 'Space Mono', monospace; font-size: 8px;
+  letter-spacing: 2px; color: var(--text-dim); text-transform: uppercase;
+}
+
+/* footer */
+.gate-footer {
+  padding: 16px 32px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.gate-footer-by { font-size: 10px; color: var(--text-dim); font-family: 'DM Sans', sans-serif; }
+.gate-footer-brand {
+  font-family: 'Syne', sans-serif; font-weight: 800;
+  font-size: 13px; letter-spacing: 2px; color: var(--c1);
+  text-shadow: 0 0 16px rgba(232,255,71,0.4);
+}
+
+/* main app hidden while gate is up */
+#app { opacity: 0; transition: opacity 0.6s; pointer-events: none; }
+#app.unlocked { opacity: 1; pointer-events: auto; }
+
 /* SCROLLBAR */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -529,6 +775,85 @@ select:focus, input[type="text"]:focus {
   <div class="bg-blob bb3"></div>
 </div>
 <div class="bg-grid"></div>
+
+<!-- ── KEY GATE ── -->
+<div id="keyGate">
+  <div class="gate-ring"></div>
+  <div class="gate-ring"></div>
+  <div class="gate-ring"></div>
+  <div class="gate-glow"></div>
+
+  <div class="gate-card">
+
+    <!-- hero -->
+    <div class="gate-hero">
+      <div class="gate-hero-badge">
+        <div class="gate-badge-dot"></div>
+        acesso exclusivo
+      </div>
+      <div class="gate-logo">SCREEN<span>REC</span></div>
+      <p class="gate-tagline">gravador de tela profissional · by MGVZ</p>
+    </div>
+
+    <!-- body -->
+    <div class="gate-body">
+
+      <!-- input -->
+      <div>
+        <div class="gate-label">Chave de Acesso</div>
+        <div class="key-input-wrap">
+          <input class="key-input" id="keyInput" type="text"
+            placeholder="Cole sua key aqui"
+            autocomplete="off" spellcheck="false"
+            oninput="this.value=this.value.toUpperCase()"
+            onkeydown="if(event.key==='Enter')verifyKey()">
+        </div>
+      </div>
+
+      <!-- status -->
+      <div class="gate-msg idle" id="gateMsg">
+        <span>✦</span>
+        <span>Insira sua key de acesso para continuar.</span>
+      </div>
+
+      <!-- verify btn -->
+      <button class="btn-verify" id="verifyBtn" onclick="verifyKey()">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M7 1L13 7L7 13M1 7H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Verificar &amp; Entrar
+      </button>
+
+      <!-- divider -->
+      <div class="gate-divider"><span>não tem uma key?</span></div>
+
+      <!-- discord CTA -->
+      <a class="gate-discord" href="https://discord.gg/uQC32EXpu6" target="_blank" rel="noopener">
+        <div class="gate-discord-icon">
+          <svg width="22" height="17" viewBox="0 0 22 17" fill="none">
+            <path d="M18.6 1.5A17.8 17.8 0 0 0 14.1.1a.07.07 0 0 0-.07.03c-.18.33-.39.75-.53 1.08a16.4 16.4 0 0 0-4.98 0A11.2 11.2 0 0 0 8 .14a.07.07 0 0 0-.07-.03A17.7 17.7 0 0 0 3.4 1.5a.06.06 0 0 0-.03.03C.5 5.8-.3 9.97.09 14.08c0 .02.01.04.03.05a17.9 17.9 0 0 0 5.42 2.75.07.07 0 0 0 .08-.03c.42-.57.79-1.18 1.1-1.81a.07.07 0 0 0-.04-.1 11.8 11.8 0 0 1-1.68-.8.07.07 0 0 1-.01-.12l.34-.26a.07.07 0 0 1 .07-.01c3.52 1.6 7.33 1.6 10.81 0a.07.07 0 0 1 .07.01l.34.26c.04.03.04.09-.01.12-.54.31-1.1.58-1.68.8a.07.07 0 0 0-.04.1c.33.63.7 1.24 1.1 1.81a.07.07 0 0 0 .08.03 17.8 17.8 0 0 0 5.43-2.75.07.07 0 0 0 .03-.05c.45-4.7-.76-8.77-3.27-12.55a.05.05 0 0 0-.03-.03ZM7.34 11.6c-1.07 0-1.96-.99-1.96-2.2s.87-2.2 1.96-2.2c1.1 0 1.97.99 1.96 2.2 0 1.21-.87 2.2-1.96 2.2Zm7.25 0c-1.07 0-1.96-.99-1.96-2.2s.87-2.2 1.96-2.2c1.1 0 1.97.99 1.96 2.2 0 1.21-.86 2.2-1.96 2.2Z" fill="#5865F2"/>
+          </svg>
+        </div>
+        <div class="gate-discord-text">
+          <div class="gate-discord-title">Entrar no Discord da MGVZ</div>
+          <div class="gate-discord-sub">Peça sua key e obtenha suporte</div>
+        </div>
+        <span class="gate-discord-arrow">→</span>
+      </a>
+
+    </div>
+
+    <!-- footer -->
+    <div class="gate-footer">
+      <span class="gate-footer-by">feito por</span>
+      <span class="gate-footer-brand">MGVZ</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── APP ── -->
+<div id="app">
 
 <div class="page">
 <div class="container">
@@ -735,6 +1060,7 @@ select:focus, input[type="text"]:focus {
 
 </div>
 </div>
+</div><!-- /#app -->
 
 <script>
 /* === WAVEFORM === */
@@ -1028,6 +1354,87 @@ async function finish(mime){
   document.getElementById('downloadBtn').innerHTML='⬇ &nbsp;Salvar Vídeo';
   document.getElementById('downloadCard').classList.add('show');
 }
+</script>
+
+<script>
+/* ============================================================
+   KEY GATE — Supabase
+   by MGVZ
+   ============================================================ */
+const SUPABASE_URL      = 'https://nfqyfycfwhlanqgttpyn.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_3I2CFnGgjrA-vquEjpASsA_0tfKBq8q';
+
+const SESSION_KEY = 'screenrec_access';
+
+async function verifyKey() {
+  const raw = document.getElementById('keyInput').value.trim().toUpperCase();
+  if (!raw) return setGateMsg('fail', '⚠️', 'Digite sua key antes de continuar.');
+  if (!raw.startsWith('SREC-')) return setGateMsg('fail', '⚠️', 'Formato inválido. A key começa com SREC-');
+
+  const btn = document.getElementById('verifyBtn');
+  btn.disabled = true;
+  setGateMsg('loading', null, 'Verificando sua key...');
+
+  try {
+    const res  = await fetch(`${SUPABASE_URL}/rest/v1/rpc/validate_key`, {
+      method:  'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+      },
+      body: JSON.stringify({ k: raw }),
+    });
+    const data = await res.json();
+
+    if (data?.valid) {
+      const dias = data.daysLeft != null ? ` · ${data.daysLeft} dias restantes` : '';
+      setGateMsg('ok', '✅', `${data.message}${dias}`);
+      sessionStorage.setItem(SESSION_KEY, raw);
+      setTimeout(unlockApp, 1000);
+    } else {
+      setGateMsg('fail', '❌', data?.message || 'Key inválida ou expirada.');
+      const inp = document.getElementById('keyInput');
+      inp.classList.add('error');
+      inp.addEventListener('input', () => inp.classList.remove('error'), { once: true });
+      btn.disabled = false;
+    }
+  } catch (e) {
+    setGateMsg('fail', '⚠️', 'Erro de conexão. Verifique sua internet e tente novamente.');
+    btn.disabled = false;
+  }
+}
+
+function setGateMsg(type, icon, text) {
+  const el = document.getElementById('gateMsg');
+  el.className = `gate-msg ${type}`;
+  el.innerHTML = type === 'loading'
+    ? `<div class="gate-spinner"></div><span>${text}</span>`
+    : `<span>${icon}</span><span>${text}</span>`;
+}
+
+function unlockApp() {
+  document.getElementById('keyGate').classList.add('hidden');
+  document.getElementById('app').classList.add('unlocked');
+}
+
+// Revalida silenciosamente se a sessão já tinha uma key
+(function checkSession() {
+  const saved = sessionStorage.getItem(SESSION_KEY);
+  if (!saved) return;
+  fetch(`${SUPABASE_URL}/rest/v1/rpc/validate_key`, {
+    method:  'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+    },
+    body: JSON.stringify({ k: saved }),
+  })
+  .then(r => r.json())
+  .then(d => { if (d?.valid) unlockApp(); else sessionStorage.removeItem(SESSION_KEY); })
+  .catch(() => {});
+})();
 </script>
 </body>
 </html>
